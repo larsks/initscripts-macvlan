@@ -1,0 +1,25 @@
+#!/bin/bash
+
+. /etc/init.d/functions
+
+cd /etc/sysconfig/network-scripts
+. ./network-functions
+
+[ -f ../network ] && . ../network
+
+CONFIG=${1}
+
+need_config ${CONFIG}
+
+source_config
+
+OTHERSCRIPT="/etc/sysconfig/network-scripts/ifdown-${REAL_DEVICETYPE}"
+
+if [ ! -x ${OTHERSCRIPT} ]; then
+	OTHERSCRIPT="/etc/sysconfig/network-scripts/ifdown-eth"
+fi
+
+${OTHERSCRIPT} ${CONFIG}
+
+ip link del ${DEVICE}
+

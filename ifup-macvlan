@@ -1,0 +1,28 @@
+#!/bin/bash
+
+. /etc/init.d/functions
+
+cd /etc/sysconfig/network-scripts
+. ./network-functions
+
+[ -f ../network ] && . ../network
+
+CONFIG=${1}
+
+need_config ${CONFIG}
+
+source_config
+
+OTHERSCRIPT="/etc/sysconfig/network-scripts/ifup-${REAL_DEVICETYPE}"
+
+if [ ! -x ${OTHERSCRIPT} ]; then
+	OTHERSCRIPT="/etc/sysconfig/network-scripts/ifup-eth"
+fi
+
+ip link add \
+	link ${MACVLAN_PARENT} \
+	name ${DEVICE} \
+	type macvlan mode ${MACVLAN_MODE:-private}
+
+${OTHERSCRIPT} ${CONFIG}
+
