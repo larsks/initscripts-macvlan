@@ -38,6 +38,7 @@ fi
 ip link add \
 	link ${MACVLAN_PARENT} \
 	name ${DEVICE} \
+	$([ -z $HWADDR ] || echo address ${HWADDR}) \
 	type ${TYPE:-macvlan} mode ${MACVLAN_MODE:-private}
 
 ${OTHERSCRIPT} ${CONFIG}
